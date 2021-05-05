@@ -13,17 +13,6 @@ const getLink = (label: string) => {
    return linkData.find((element) => element.linkLabel === label)
 }
 
-const checkLink = async (url: string) => {
-   try {
-      const response = await fetch(url, { method: 'Head' })
-      // eslint-disable-next-line no-console
-      console.log(response.status)
-   } catch (error) {
-      // eslint-disable-next-line no-console
-      console.log(error)
-   }
-}
-
 const useStyles = makeStyles((theme: Theme) =>
    createStyles({
       root: {
@@ -91,8 +80,6 @@ export default function GettingStarted() {
    const classes = useStyles()
    const [activeStep, setActiveStep] = React.useState(0)
    const steps = getSteps()
-
-   checkLink('http://localhost:3000/')
 
    const handleNext = () => {
       setActiveStep((prevActiveStep) => prevActiveStep + 1)
