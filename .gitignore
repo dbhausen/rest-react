@@ -1,0 +1,10 @@
+db.sqlite3
+.env
+.vscode
+**/__*
+manage.py
+wsgi.py
+backend/migrations
+node_modules
+
+
