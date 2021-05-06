@@ -1,12 +1,13 @@
-import { Button } from '@material-ui/core'
+import { Accordion, AccordionDetails, AccordionSummary, Button } from '@material-ui/core'
 import { createMuiTheme, MuiThemeProvider, useTheme } from '@material-ui/core/styles'
+import ExpandMore from '@material-ui/icons/ExpandMore'
 // eslint-disable-next-line no-unused-vars
 import TelegramIcon from '@material-ui/icons/Telegram'
+import axios from 'axios'
 import { convertToRaw, EditorState, RawDraftContentState } from 'draft-js'
 import MUIRichTextEditor, { TToolbarComponentProps } from 'mui-rte'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import env from '../Login/Env'
-import getCsrfToken from '../Login/getCsrfToken'
 
 const lightTheme = createMuiTheme()
 
@@ -131,36 +132,47 @@ const getTheme = () => {
 
    return darkTheme
 }
-
-const save = async (data: RawDraftContentState) => {
-   const url = `${env().API_HOST}/api/message/`
-   const method = 'POST'
-
-   /*
-   if (false) {
-      url = `${env().API_HOST + baseUrl}update/${pk}`
-      method = 'PUT'
-   }
-   */
-   const newMessage = {
-      text: JSON.stringify(data),
-   }
-
-   const requestOptions = {
-      method,
-      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': await getCsrfToken() },
-      body: JSON.stringify(newMessage),
-   }
-   try {
-      await fetch(url, requestOptions)
-   } catch (error) {
-      // eslint-disable-next-line no-console
-      console.log(error)
-   }
+const url = `${env().API_HOST}/api/message/`
+// eslint-disable-next-line no-unused-vars
+const content =
+   '{"blocks":[{"key":"22m2s","text":"thing 1","type":"ordered-list-item","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"59k7f","text":"thing 2","type":"ordered-list-item","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{}}'
+type TMessage = {
+   id: number
+   date: string
+   text: string
+   approved: boolean
+   category: string
 }
 
 const MyEditor = () => {
    const [dirty, setDirty] = useState(false)
+   const [messages, setMessages] = useState<TMessage[]>()
+
+   useEffect(() => {
+      const getMessages = async () => {
+         const response = await axios.get(url)
+         setMessages(response.data)
+      }
+
+      getMessages()
+   }, [])
+
+   const save = async (data: RawDraftContentState) => {
+      const newMessage = {
+         text: JSON.stringify(data),
+      }
+      await axios.post(url, newMessage)
+      const response = await axios.get(url)
+      setMessages(response.data)
+      // eslint-disable-next-line no-console
+      console.log(messages)
+   }
+
+   /*
+                           <MuiThemeProvider theme={getTheme()}>
+                           <MUIRichTextEditor defaultValue={message.text} />
+                        </MuiThemeProvider>
+   */
 
    const MySendComponent = (props: TToolbarComponentProps) => {
       return (
@@ -217,6 +229,28 @@ const MyEditor = () => {
             </MuiThemeProvider>
             <br />
          </form>
+         <div>
+            {messages?.map((message: TMessage) => {
+               return (
+                  <Accordion>
+                     <AccordionSummary
+                        expandIcon={<ExpandMore />}
+                        aria-label="Expand"
+                        aria-controls="additional-actions1-content"
+                        id="additional-actions1-header">
+                        {message.date}
+                     </AccordionSummary>
+                     <AccordionDetails>
+                        <div>
+                           <MuiThemeProvider theme={getTheme()}>
+                              <MUIRichTextEditor defaultValue={message.text} controls={[]} readOnly={true} />
+                           </MuiThemeProvider>
+                        </div>
+                     </AccordionDetails>
+                  </Accordion>
+               )
+            })}
+         </div>
       </div>
    )
 }

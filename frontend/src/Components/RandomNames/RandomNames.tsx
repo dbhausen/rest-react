@@ -1,5 +1,4 @@
 /* eslint-disable no-nested-ternary */
-/* eslint-disable no-console */
 import {
    Button,
    createStyles,
@@ -158,10 +157,6 @@ const RandomNames = (props: IProps) => {
       }
 
       fetchNames()
-
-      return () => {
-         console.log('to do: cleanup useEffect if needed')
-      }
    }, [])
 
    const callCalculate = () => {
