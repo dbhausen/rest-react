@@ -160,6 +160,7 @@ const MyEditor = () => {
    const [messages, setMessages] = useState<TMessage[]>()
    const [category, setCatagory] = useState('Comment')
    const [title, setTitle] = useState('')
+   const [expanded, setExpanded] = useState<number>(-1)
 
    useEffect(() => {
       const getMessages = async () => {
@@ -171,16 +172,15 @@ const MyEditor = () => {
    }, [])
 
    const save = async (data: RawDraftContentState) => {
+      const t = title === '' ? 'untitled' : title
       const newMessage = {
          text: JSON.stringify(data),
          category,
-         title,
+         title: t,
       }
       await axios.post(url, newMessage)
       const response = await axios.get(url)
       setMessages(response.data)
-      // eslint-disable-next-line no-console
-      console.log(messages)
    }
 
    const MySendComponent = (props: TToolbarComponentProps) => {
@@ -208,6 +208,11 @@ const MyEditor = () => {
       setTitle(event.target.value as string)
    }
 
+   // eslint-disable-next-line no-unused-vars
+   const handleAccordianChange = (panel: number) => (event: React.ChangeEvent<{}>, isExpanded: boolean) => {
+      setExpanded(isExpanded ? panel : -1)
+   }
+
    return (
       <div>
          <form style={{}}>
@@ -217,6 +222,9 @@ const MyEditor = () => {
                   value={title}
                   id="title"
                   label="Title"
+                  inputProps={{
+                     maxLength: 30,
+                  }}
                   onChange={handleTitleChange}
                   style={{ paddingBottom: 0, paddingTop: 6 }}
                />
@@ -270,9 +278,9 @@ const MyEditor = () => {
          </form>
          <div>
             <Divider />
-            {messages?.map((message: TMessage) => {
+            {messages?.map((message: TMessage, index: number) => {
                return (
-                  <Accordion>
+                  <Accordion expanded={expanded === index} onChange={handleAccordianChange(index)}>
                      <AccordionSummary
                         expandIcon={<ExpandMore />}
                         aria-label="Expand"
