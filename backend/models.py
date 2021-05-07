@@ -6,6 +6,7 @@ from django.db import models
 
 class Message(models.Model):
     date = models.DateTimeField(null=False, auto_now_add=True)
+    title = models.CharField(null=False, max_length=30, default="untitled")
     text = models.TextField(null=False, default="left blank")
     approved = models.BooleanField(null=False, default=False)
     category = models.CharField(null=False, max_length=30, default="unassigned")

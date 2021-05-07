@@ -38,7 +38,7 @@ def material_ui(func):
 
 
 class MessageListView(generics.ListCreateAPIView):
-    queryset = Message.objects.all()
+    queryset = Message.objects.order_by("date").reverse()
     serializer_class = MessageSerializer
 
 

@@ -1,4 +1,16 @@
-import { Accordion, AccordionDetails, AccordionSummary, Button } from '@material-ui/core'
+import {
+   Accordion,
+   AccordionDetails,
+   AccordionSummary,
+   Button,
+   Divider,
+   FormControl,
+   Grid,
+   InputLabel,
+   MenuItem,
+   Select,
+   TextField,
+} from '@material-ui/core'
 import { createMuiTheme, MuiThemeProvider, useTheme } from '@material-ui/core/styles'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 // eslint-disable-next-line no-unused-vars
@@ -108,8 +120,8 @@ Object.assign(darkTheme, {
             overflow: 'auto',
          },
          toolbar: {
-            borderTop: '1px solid gray',
             backgroundColor: '#37474F',
+            marginTop: 0,
          },
          placeHolder: {
             paddingLeft: 20,
@@ -133,12 +145,11 @@ const getTheme = () => {
    return darkTheme
 }
 const url = `${env().API_HOST}/api/message/`
-// eslint-disable-next-line no-unused-vars
-const content =
-   '{"blocks":[{"key":"22m2s","text":"thing 1","type":"ordered-list-item","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"59k7f","text":"thing 2","type":"ordered-list-item","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{}}'
+
 type TMessage = {
    id: number
    date: string
+   title: string
    text: string
    approved: boolean
    category: string
@@ -147,6 +158,8 @@ type TMessage = {
 const MyEditor = () => {
    const [dirty, setDirty] = useState(false)
    const [messages, setMessages] = useState<TMessage[]>()
+   const [category, setCatagory] = useState('Comment')
+   const [title, setTitle] = useState('')
 
    useEffect(() => {
       const getMessages = async () => {
@@ -160,6 +173,8 @@ const MyEditor = () => {
    const save = async (data: RawDraftContentState) => {
       const newMessage = {
          text: JSON.stringify(data),
+         category,
+         title,
       }
       await axios.post(url, newMessage)
       const response = await axios.get(url)
@@ -167,12 +182,6 @@ const MyEditor = () => {
       // eslint-disable-next-line no-console
       console.log(messages)
    }
-
-   /*
-                           <MuiThemeProvider theme={getTheme()}>
-                           <MUIRichTextEditor defaultValue={message.text} />
-                        </MuiThemeProvider>
-   */
 
    const MySendComponent = (props: TToolbarComponentProps) => {
       return (
@@ -191,9 +200,39 @@ const MyEditor = () => {
       setDirty(state.getCurrentContent().hasText())
    }
 
+   const handleCategoryChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+      setCatagory(event.target.value as string)
+   }
+
+   const handleTitleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+      setTitle(event.target.value as string)
+   }
+
    return (
       <div>
-         <form>
+         <form style={{}}>
+            <Grid style={{ paddingBottom: 0, paddingTop: 6 }} container direction="row">
+               <TextField
+                  variant="filled"
+                  value={title}
+                  id="title"
+                  label="Title"
+                  onChange={handleTitleChange}
+                  style={{ paddingBottom: 0, paddingTop: 6 }}
+               />
+               <FormControl variant="filled" style={{ paddingBottom: 0, paddingTop: 6 }}>
+                  <InputLabel id="demo-simple-select-label">Catigory</InputLabel>
+                  <Select
+                     labelId="demo-simple-select-label"
+                     value={category}
+                     onChange={handleCategoryChange}
+                     id="category">
+                     <MenuItem value="Comment">Comment</MenuItem>
+                     <MenuItem value="Bug Report">Bug Report</MenuItem>
+                     <MenuItem value="Feature Request">Feature Request</MenuItem>
+                  </Select>
+               </FormControl>
+            </Grid>
             <MuiThemeProvider theme={getTheme()}>
                <MUIRichTextEditor
                   controls={[
@@ -230,6 +269,7 @@ const MyEditor = () => {
             <br />
          </form>
          <div>
+            <Divider />
             {messages?.map((message: TMessage) => {
                return (
                   <Accordion>
@@ -238,7 +278,7 @@ const MyEditor = () => {
                         aria-label="Expand"
                         aria-controls="additional-actions1-content"
                         id="additional-actions1-header">
-                        {message.date}
+                        {'Created: '} {message.date} {`,  Title: `} {message.title} {`,  Category: `} {message.category}
                      </AccordionSummary>
                      <AccordionDetails>
                         <div>
