@@ -16,12 +16,13 @@ import BrightnessHighIcon from '@material-ui/icons/BrightnessHigh'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 import MenuIcon from '@material-ui/icons/Menu'
-import React from 'react'
+import React, { useState } from 'react'
 import { createMyTheme, makeMyStyles } from '../../Themes/createMyTheme'
 import BoxBuilder from '../BoxBuilder/BoxBuilder'
 import MyEditor from '../ContactUs/ContactUs'
 import GettingStarted from '../GettingStarted/GettingStarted'
 import Home from '../Home/Home'
+import linkJSON from '../Links/links.json'
 import env from '../Login/Env'
 import RandomValues from '../RandomNames/RandomNames'
 import RestCrud from '../RestCrud/RestCrud'
@@ -32,13 +33,17 @@ const drawerWidth = 150
 const ResponsiveDrawer = (props: WithWidth) => {
    const { width } = props
 
-   const [brigtness, setBrightness] = React.useState('dark')
+   const [brigtness, setBrightness] = useState('dark')
    const appliedTheme = createMyTheme(brigtness)
    const myStyles = makeMyStyles(appliedTheme, drawerWidth)
    const useStyles = makeStyles(() => createStyles(myStyles))
    const classes = useStyles()
-   const [mobileOpen, setMobileOpen] = React.useState(false)
-   const [showing, setShowing] = React.useState('Home')
+   const [mobileOpen, setMobileOpen] = useState(false)
+   const [showing, setShowing] = useState('Home')
+
+   const getLink = (label: string): any => {
+      return linkJSON.find((link) => link.label === label)
+   }
 
    document.body.style.backgroundColor = appliedTheme.palette.background.paper
 
@@ -47,6 +52,9 @@ const ResponsiveDrawer = (props: WithWidth) => {
    }
 
    const handleThemeToggle = (event: any, newValue: string) => {
+      // eslint-disable-next-line no-console
+      console.log(getLink('VSCode'))
+
       setBrightness(newValue)
    }
 

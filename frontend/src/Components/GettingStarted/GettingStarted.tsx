@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 function getSteps() {
-   return ['Install VSCode', 'Install django', 'Install Rest']
+   return ['Install VSCode', 'Install django', 'Install Rest', 'Node.js']
 }
 
 function getStepContent(step: number) {
@@ -90,7 +90,7 @@ export default function GettingStarted() {
    }
 
    const handleJumpTo = (step: number) => {
-      setActiveStep(step)
+      setActiveStep(activeStep === step ? -1 : step)
    }
 
    return (

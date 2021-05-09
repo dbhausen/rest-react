@@ -152,8 +152,6 @@ declare type RestViewGridProps = Omit<DataGridProps, 'columns' | 'rows'> & {
    rows?: GridRowsProp
 }
 
-//  TO DO: set "error" parameter ie. <DataGrid> error </DataGrid> if error
-//  TO DO: note what's here does not work shows no row instead of error
 export const RestViewGrid = (props: RestViewGridProps): any => {
    const { url, columns, rows, ...other } = props
    const emptyCols: GridColumns = []

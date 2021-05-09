@@ -1,4 +1,8 @@
+import json
+import os
+import urllib.request
 from collections import OrderedDict
+from json.encoder import JSONEncoder
 from typing import OrderedDict
 
 from django.http import JsonResponse
@@ -65,7 +69,47 @@ def csrf(request):
 
 
 def ping(request):
-    return JsonResponse({"result": "OK"})
+    class _externalLink:
+        """Represents a link to a validated external web page
+        attributes:  url, isValidated
+        """
+
+        def __str__(self) -> str:
+            return {"url": self.url}
+
+        def __init__(self, url):
+            self.url = url
+            try:
+                response = urllib.request.urlopen(url).read()
+                if response:
+                    self.isValidated = True
+            except:
+                self.isValidated = False
+
+    linkDict = {
+        "VSCode": _externalLink("https://code.visualstudio.com/"),
+        "pythonanywhere": _externalLink("https://www.pythonanywhere.com/"),
+        "namecheap": _externalLink("https://www.namecheap.com/"),
+        "GitHub": _externalLink("https://github.com/"),
+        "django": _externalLink("https://www.djangoproject.com/"),
+        "Rest framework": _externalLink("https://www.django-rest-framework.org/"),
+        "TypeScript": _externalLink("https://www.typescriptlang.org/"),
+        "React": _externalLink("https://reactjs.org/"),
+        "material-ui": _externalLink("https://material-ui.com/"),
+    }
+
+    keys = linkDict.keys()
+    links = []
+    for key in keys:
+        links.append(
+            {
+                "label": key,
+                "url": linkDict[key].url,
+                "isValidated": linkDict[key].isValidated,
+            }
+        )
+
+    return JsonResponse({"links": links})
 
 
 # pylint: disable=no-member
