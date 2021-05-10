@@ -8,3 +8,4 @@ backend/migrations
 node_modules
 
 
+frontend/src/Components/Links/links.json

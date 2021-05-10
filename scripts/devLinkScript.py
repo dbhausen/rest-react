@@ -18,7 +18,9 @@ def ping():
             except:
                 self.isValidated = False
 
-    with open("../frontend/src/Components/Links/links.json", "r") as f:
+    with open(
+        "c:/Users/david/P2/reg_project/frontend/src/Components/Links/linksIn.json", "r"
+    ) as f:
         links = json.load(f)
 
         validatedLinks = []
@@ -32,7 +34,10 @@ def ping():
                 }
             )
 
-        with open("../frontend/src/Components/Links/links.json", "w") as f:
+        with open(
+            "c:/Users/david/P2/reg_project/frontend/src/Components/Links/links.json",
+            "w",
+        ) as f:
             f.write(json.dumps(validatedLinks, indent=2, sort_keys=False))
 
 
