@@ -1,8 +1,6 @@
-import { Button, createStyles, Divider, Grid, Link, makeStyles, Paper, Theme, Typography } from '@material-ui/core'
-import axios from 'axios'
+import { createStyles, Divider, Grid, Link, makeStyles, Paper, Theme, Typography } from '@material-ui/core'
 import React from 'react'
 import linkJSON from '../Links/links.json'
-import env from '../Login/Env'
 
 const getLink = (label: string): any => {
    return linkJSON.find((link) => link.label === label)
@@ -103,20 +101,13 @@ export const linkData: TlinkData[] = [
 const Stack = () => {
    const classes = useStyles()
 
-   const test = async () => {
-      const url = `${env().API_HOST}/ping/`
-      const response = await axios.get(url)
-      // eslint-disable-next-line no-console
-      console.log(response)
-   }
-
    return (
       <Paper elevation={0} className={classes.root}>
          <Typography align="justify" className={classes.intro}>
             Part of the fun is developing a great technology stack. Think of the following as a reasonable starting
             point on your quest for Nirvana.
          </Typography>
-         <Button onClick={test}>Test</Button>
+
          <Divider />
          <Grid container direction="column" spacing={2}>
             {linkData.map((link) => (
