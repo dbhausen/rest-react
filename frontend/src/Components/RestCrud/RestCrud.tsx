@@ -1,11 +1,10 @@
 /* eslint-disable no-unused-vars */
-import { AppBar, Box, createStyles, Grid, makeStyles, Paper, Tab, Tabs, Theme } from '@material-ui/core'
-import { GridColumns } from '@material-ui/data-grid'
+import { AppBar, Box, createStyles, makeStyles, Paper, Tab, Tabs, Theme } from '@material-ui/core'
 import React from 'react'
 import env from '../Login/Env'
-import { RestForm, RestViewGrid } from '../RestFormGrid/RestFormGrid'
+import RestForm from '../RestFormGrid/RestFormGrid'
 
-const cols: GridColumns = [{ field: 'myemail', width: 250, headerName: 'Email Address' }, { field: 'id' }]
+// const cols: GridColumns = [{ field: 'myemail', width: 250, headerName: 'Email Address' }, { field: 'id' }]
 
 const RestCrud = () => {
    const [value, setValue] = React.useState(0)
@@ -77,16 +76,9 @@ const RestCrud = () => {
             </Tabs>
          </AppBar>
          <TabPanel value={value} index={0}>
-            <Grid container spacing={1}>
-               <Grid item xs={7} sm={5} md={4} lg={2} className={classes.form}>
-                  <RestForm url={`${env().API_HOST}/api/`} />
-               </Grid>
-               <Grid item xs={12} sm={6} md={7} lg={9} className={classes.data}>
-                  <Paper className={classes.dataPaper}>
-                     <RestViewGrid url={`${env().API_HOST}/api/`} density="compact" autoHeight pageSize={10} />
-                  </Paper>
-               </Grid>
-            </Grid>
+            <Paper className={classes.dataPaper}>
+               <RestForm url={`${env().API_HOST}/api/`} density="compact" autoHeight pageSize={10} />
+            </Paper>
          </TabPanel>
          <TabPanel value={value} index={1}>
             To Do: Instalations instructions

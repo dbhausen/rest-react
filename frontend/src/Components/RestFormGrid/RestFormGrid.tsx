@@ -1,11 +1,10 @@
 /* eslint-disable react/require-default-props */
 /* eslint-disable guard-for-in */
 /* eslint-disable no-restricted-syntax */
-import { Button, Card, CardContent, createStyles, makeStyles, Paper, Typography } from '@material-ui/core'
+import { Button, Card, CardContent, createStyles, Grid, makeStyles, Paper, Typography } from '@material-ui/core'
 import { DataGrid, DataGridProps, GridColDef, GridColumns, GridRowsProp } from '@material-ui/data-grid'
 import React, { useEffect, useState } from 'react'
 import SwitchTextField from '../Controls/SwitchTextField'
-import env from '../Login/Env'
 
 type TField = {
    name: string
@@ -20,131 +19,99 @@ type TField = {
    value: any
 }
 
-const baseUrl = '/api/'
+const getRows = async (url: string): Promise<GridRowsProp> => {
+   const r: GridRowsProp = await fetch(url, { method: 'GET' })
+      .then((response) => response.json())
+      .then((data) => {
+         const rows: GridRowsProp = data
 
-class RestMeta {
-   url: string
-
-   hook: any
-
-   metaFields: TField[]
-
-   setUrl(url: string) {
-      this.url = url
-   }
-
-   setHook(hook: any) {
-      this.hook = hook
-   }
-
-   handleRowSelected = (e: any) => {
-      const newFields: TField[] = this.metaFields.map((field) => {
-         const updataField: TField = field
-
-         updataField.value = e.data[field.name] ? e.data[field.name] : ''
-
-         return updataField
+         return rows
       })
-      if (this.hook) {
-         this.hook(newFields)
-      }
-   }
-
-   getRows = async (): Promise<GridRowsProp> => {
-      const r: GridRowsProp = await fetch(this.url, { method: 'GET' })
-         .then((response) => response.json())
-         .then((data) => {
-            const rows: GridRowsProp = data
-
-            return rows
-         })
-         .catch((err) => {
-            // eslint-disable-next-line no-console
-            console.error(`no database >>> ${err}`)
-            throw err
-         })
-      return r
-   }
-
-   getColumns = async (): Promise<GridColumns> => {
-      const metaFields: TField[] = await this.getMetaFields()
-      const _cols: GridColumns = metaFields.map((f) => {
-         const col: GridColDef = {
-            field: f.name,
-            headerName: f.label,
-            type: f.colType,
-         }
-         return col
+      .catch((err) => {
+         // eslint-disable-next-line no-console
+         console.error(`no database >>> ${err}`)
+         throw err
       })
-      return _cols
-   }
-
-   getMetaFields = async (): Promise<TField[]> => {
-      const f: TField[] = await fetch(this.url, { method: 'OPTIONS' })
-         .then((response) => response.json())
-         .then((metaData) => {
-            const meta = metaData.actions.POST
-            const fields: TField[] = []
-            for (const prop in meta) {
-               const detail = meta[prop]
-               const fieldDef: TField = {
-                  name: prop,
-                  modelType: detail.type,
-                  inputType: detail.type,
-                  inputShrink: true,
-                  colType: 'string',
-                  required: detail.required,
-                  readOnly: detail.read_only,
-                  label: detail.label,
-                  width: 350,
-                  value: '',
-               }
-               switch (detail.type) {
-                  case 'integer':
-                     fieldDef.inputType = 'number'
-                     fieldDef.colType = 'number'
-                     break
-                  case 'decimal':
-                     fieldDef.colType = 'number'
-                     break
-                  case 'float':
-                     fieldDef.colType = 'number'
-                     break
-                  case 'boolean':
-                     fieldDef.inputType = 'checkbox'
-                     fieldDef.value = false
-                     break
-                  case 'datetime':
-                     fieldDef.inputType = 'dateTime-local'
-                     fieldDef.colType = 'dateTime'
-                     fieldDef.width = 300
-                     break
-                  case 'date':
-                     fieldDef.width = 300
-                     break
-                  case 'string':
-                     fieldDef.inputType = 'text'
-                     break
-                  case 'email':
-                     fieldDef.colType = 'string'
-                     break
-                  case 'file upload':
-                     fieldDef.width = 300
-                     fieldDef.colType = 'string'
-                     break
-                  default:
-                     break
-               }
-
-               fields.push(fieldDef)
-            }
-            return fields
-         })
-      this.metaFields = f
-      return f
-   }
+   return r
 }
-const meta = new RestMeta()
+
+const getColumns = async (url: string): Promise<GridColumns> => {
+   const metaFields: TField[] = await getMetaFields(url)
+   const _cols: GridColumns = metaFields.map((f) => {
+      const col: GridColDef = {
+         field: f.name,
+         headerName: f.label,
+         type: f.colType,
+      }
+      return col
+   })
+   return _cols
+}
+
+const getMetaFields = async (url: string): Promise<TField[]> => {
+   const f: TField[] = await fetch(url, { method: 'OPTIONS' })
+      .then((response) => response.json())
+      .then((metaData) => {
+         const meta = metaData.actions.POST
+         const fields: TField[] = []
+         for (const prop in meta) {
+            const detail = meta[prop]
+            const fieldDef: TField = {
+               name: prop,
+               modelType: detail.type,
+               inputType: detail.type,
+               inputShrink: true,
+               colType: 'string',
+               required: detail.required,
+               readOnly: detail.read_only,
+               label: detail.label,
+               width: 350,
+               value: '',
+            }
+            switch (detail.type) {
+               case 'integer':
+                  fieldDef.inputType = 'number'
+                  fieldDef.colType = 'number'
+                  break
+               case 'decimal':
+                  fieldDef.colType = 'number'
+                  break
+               case 'float':
+                  fieldDef.colType = 'number'
+                  break
+               case 'boolean':
+                  fieldDef.inputType = 'checkbox'
+                  fieldDef.value = false
+                  break
+               case 'datetime':
+                  fieldDef.inputType = 'dateTime-local'
+                  fieldDef.colType = 'dateTime'
+                  fieldDef.width = 300
+                  break
+               case 'date':
+                  fieldDef.width = 300
+                  break
+               case 'string':
+                  fieldDef.inputType = 'text'
+                  break
+               case 'email':
+                  fieldDef.colType = 'string'
+                  break
+               case 'file upload':
+                  fieldDef.width = 300
+                  fieldDef.colType = 'string'
+                  break
+               default:
+                  break
+            }
+
+            fields.push(fieldDef)
+         }
+         return fields
+      })
+
+   return f
+}
 
 declare type RestViewGridProps = Omit<DataGridProps, 'columns' | 'rows'> & {
    url: string
@@ -152,42 +119,9 @@ declare type RestViewGridProps = Omit<DataGridProps, 'columns' | 'rows'> & {
    rows?: GridRowsProp
 }
 
-export const RestViewGrid = (props: RestViewGridProps): any => {
+const RestForm = (props: RestViewGridProps) => {
    const { url, columns, rows, ...other } = props
-   const emptyCols: GridColumns = []
-   const emptyRows: GridRowsProp = []
-   const [cols, setCols] = useState(emptyCols)
-   const [_rows, setRows] = useState(emptyRows)
-   meta.setUrl(url)
 
-   useEffect(() => {
-      if (cols === emptyCols) {
-         if (columns) {
-            setCols(columns)
-         } else {
-            meta.getColumns().then((c) => {
-               setCols(c)
-            })
-         }
-
-         if (rows) {
-            setRows(rows)
-         } else {
-            meta.getRows().then((r) => {
-               setRows(r)
-            })
-         }
-      }
-   }, [])
-
-   return <DataGrid onRowSelected={meta.handleRowSelected} rows={_rows} columns={cols} {...other} />
-}
-
-interface IProps {
-   url: string
-}
-
-export const RestForm = (props: IProps) => {
    const useStyles = makeStyles(() =>
       createStyles({
          wordwrap: {
@@ -202,19 +136,50 @@ export const RestForm = (props: IProps) => {
    const [newData, setNewData] = useState('')
    const [resp, setResp] = useState(emptyRep)
    const classes = useStyles()
-   meta.setUrl(props.url)
-   meta.setHook(setMetaFields)
+   const emptyCols: GridColumns = []
+   const emptyRows: GridRowsProp = []
+   const [cols, setCols] = useState(emptyCols)
+   const [_rows, setRows] = useState(emptyRows)
+
+   useEffect(() => {
+      if (cols === emptyCols) {
+         if (columns) {
+            setCols(columns)
+         } else {
+            getColumns(url).then((c) => {
+               setCols(c)
+            })
+         }
+
+         if (rows) {
+            setRows(rows)
+         } else {
+            getRows(url).then((r) => {
+               setRows(r)
+            })
+         }
+      }
+   }, [])
 
    useEffect(() => {
       if (metaFields === emptyMeta) {
-         meta
-            .getMetaFields()
+         getMetaFields(url)
             .then((c) => {
                setMetaFields(c)
             })
             .catch(() => {})
       }
    })
+
+   const handleRowSelected = (e: any) => {
+      setMetaFields(
+         metaFields.map((field) => {
+            const updataField: TField = field
+            updataField.value = e.data[field.name] ? e.data[field.name] : ''
+            return updataField
+         })
+      )
+   }
 
    const handleChange = (event: any) => {
       // event.preventDefault()
@@ -294,11 +259,11 @@ export const RestForm = (props: IProps) => {
       if (isValid) {
          const data = stripFormat.reduce((acc, cur) => ({ ...acc, [cur.name]: cur.value }), {})
          setNewData(JSON.stringify(data))
-         let url = `${env().API_HOST + baseUrl}`
+         let urlX = url
          let method = 'POST'
 
          if (isUpdate) {
-            url = `${env().API_HOST + baseUrl}update/${pk}`
+            urlX = `${url}update/${pk}`
             method = 'PUT'
          }
          const requestOptions = {
@@ -308,9 +273,12 @@ export const RestForm = (props: IProps) => {
             body: JSON.stringify(data),
          }
          try {
-            const response = await fetch(url, requestOptions)
-
+            const response = await fetch(urlX, requestOptions)
             setResp(response)
+
+            getRows(url).then((r) => {
+               setRows(r)
+            })
          } catch (error) {
             // eslint-disable-next-line no-console
             console.log(error)
@@ -324,51 +292,59 @@ export const RestForm = (props: IProps) => {
 
    return (
       <Paper elevation={0}>
-         <form onSubmit={handleSubmit}>
-            {metaFields.map((item, index) => (
-               <div key={item.name}>
-                  {item.readOnly ? (
-                     <Paper variant="outlined">
-                        <span>{`${item.name} : ${item.value}`}</span>
-                     </Paper>
-                  ) : (
-                     <SwitchTextField
-                        label={item.label}
-                        type={item.inputType}
-                        fullWidth={true}
-                        value={item.value}
-                        required={item.required}
-                        onChange={handleChange}
-                        id={index.toString()}
-                        name={item.name}
-                        InputLabelProps={{
-                           shrink: item.inputShrink,
-                        }}
-                     />
-                  )}
-               </div>
-            ))}
+         <Grid container>
+            <Grid item xs={8} sm={5} md={4} lg={3} xl={2}>
+               <form onSubmit={handleSubmit}>
+                  {metaFields.map((item, index) => (
+                     <div key={item.name}>
+                        {item.readOnly ? (
+                           <Paper variant="outlined">
+                              <span>{`${item.name} : ${item.value}`}</span>
+                           </Paper>
+                        ) : (
+                           <SwitchTextField
+                              label={item.label}
+                              type={item.inputType}
+                              fullWidth={true}
+                              value={item.value}
+                              required={item.required}
+                              onChange={handleChange}
+                              id={index.toString()}
+                              name={item.name}
+                              InputLabelProps={{
+                                 shrink: item.inputShrink,
+                              }}
+                           />
+                        )}
+                     </div>
+                  ))}
 
-            <Button variant="contained" color="primary" type="submit">
-               submit
-            </Button>
+                  <Button variant="contained" color="primary" type="submit">
+                     submit
+                  </Button>
 
-            <Card>
-               <CardContent>
-                  <Typography color="textPrimary" gutterBottom>
-                     Data sent:
-                  </Typography>
-                  <Typography variant="body2" component="p" gutterBottom className={classes.wordwrap}>
-                     {newData}
-                  </Typography>
-                  <Typography color="textPrimary" gutterBottom>
-                     Response:
-                  </Typography>
-                  <Typography>{`Status Text: ${resp.statusText}`}</Typography>
-                  <Typography>{`URL: ${resp.url}`}</Typography>
-               </CardContent>
-            </Card>
-         </form>
+                  <Card>
+                     <CardContent>
+                        <Typography color="textPrimary" gutterBottom>
+                           Data sent:
+                        </Typography>
+                        <Typography variant="body2" component="p" gutterBottom className={classes.wordwrap}>
+                           {newData}
+                        </Typography>
+                        <Typography color="textPrimary" gutterBottom>
+                           Response:
+                        </Typography>
+                        <Typography>{`Status Text: ${resp.statusText}`}</Typography>
+                        <Typography>{`URL: ${resp.url}`}</Typography>
+                     </CardContent>
+                  </Card>
+               </form>
+            </Grid>
+            <Grid item xs={12} sm={7} md={8} lg={9} xl={10}>
+               <DataGrid onRowSelected={handleRowSelected} rows={_rows} columns={cols} {...other} />
+            </Grid>
+         </Grid>
       </Paper>
    )
 }
+export default RestForm

@@ -8,7 +8,7 @@ import getCsrfToken from '../Login/getCsrfToken'
 import Login from '../Login/Login'
 import RandomValues from '../RandomNames/RandomNames'
 import RestCrud from '../RestCrud/RestCrud'
-import { RestViewGrid } from '../RestFormGrid/RestFormGrid'
+import RestViewGrid from '../RestFormGrid/RestFormGrid'
 import './App.css'
 import useToken from './useToken'
 
