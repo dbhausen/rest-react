@@ -8,9 +8,10 @@ def ping():
         attributes:  url, isValidated
         """
 
-        def __init__(self, label, url):
+        def __init__(self, label, url, okIfNotValid):
             self.url = url
             self.label = label
+            self.okIfNotValid = okIfNotValid
             try:
                 response = urllib.request.urlopen(url).read()
                 if response:
@@ -26,11 +27,12 @@ def ping():
 
         validatedLinks = []
         for link in links:
-            vlink = _externalLink(link["label"], link["url"])
+            vlink = _externalLink(link["label"], link["url"], link["okIfNotValid"])
             validatedLinks.append(
                 {
                     "label": vlink.label,
                     "url": vlink.url,
+                    "okIfNotValid": vlink.okIfNotValid,
                     "isValidated": vlink.isValidated,
                 }
             )

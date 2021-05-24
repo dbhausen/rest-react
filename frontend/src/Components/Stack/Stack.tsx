@@ -1,10 +1,6 @@
-import { createStyles, Divider, Grid, Link, makeStyles, Paper, Theme, Typography } from '@material-ui/core'
+import { createStyles, Divider, Grid, makeStyles, Paper, Theme, Typography } from '@material-ui/core'
 import React from 'react'
-import linkJSON from '../Links/links.json'
-
-const getLink = (label: string): any => {
-   return linkJSON.find((link) => link.label === label)
-}
+import { getLink, ValidatedLink } from '../Links/LinkUtil'
 
 const useStyles = makeStyles((theme: Theme) =>
    createStyles({
@@ -91,6 +87,14 @@ export const linkData: TlinkData[] = [
    },
 
    {
+      typeHeading: 'Axios. Free',
+      link: getLink('axios on github').url,
+      linkLabel: 'axios on github',
+      description:
+         'Promise based HTTP client for the browser and node.js. (Used as an alternative to native Fetch api)',
+   },
+
+   {
       typeHeading: 'Material-ui  Free (until it is not)',
       link: getLink('material-ui').url,
       linkLabel: 'material-ui',
@@ -118,9 +122,7 @@ const Stack = () => {
                   <Grid container direction="row" spacing={3}>
                      <Grid item xs={4} sm={3} md={3} lg={3} xl={3}>
                         <Typography className={classes.linkLabel}>
-                           <Link target="_blank" href={link.link} color="inherit">
-                              {link.linkLabel}
-                           </Link>
+                           <ValidatedLink label={link.linkLabel} />
                         </Typography>
                      </Grid>
                      <Grid item xs={8} sm={9} md={9} lg={9} xl={9}>

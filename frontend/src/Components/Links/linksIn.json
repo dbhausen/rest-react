@@ -2,46 +2,76 @@
    {
       "label": "VSCode",
       "url": "https://code.visualstudio.com/",
+      "okIfNotValid": false,
       "isValidated": true
    },
    {
       "label": "pythonanywhere",
       "url": "https://www.pythonanywhere.com/",
+      "okIfNotValid": false,
       "isValidated": true
    },
    {
       "label": "namecheap",
       "url": "https://www.namecheap.com/",
+      "okIfNotValid": true,
       "isValidated": false
    },
    {
       "label": "GitHub",
       "url": "https://github.com/",
+      "okIfNotValid": false,
       "isValidated": true
    },
    {
       "label": "django",
       "url": "https://www.djangoproject.com/",
+      "okIfNotValid": false,
       "isValidated": true
    },
+   {
+      "label": "django Quick Install Guide",
+      "url": "https://docs.djangoproject.com/en/3.2/intro/install/",
+      "okIfNotValid": false,
+      "isValidated": true
+   },
+
    {
       "label": "Rest framework",
       "url": "https://www.django-rest-framework.org/",
+      "okIfNotValid": false,
       "isValidated": true
    },
+
    {
       "label": "TypeScript",
       "url": "https://www.typescriptlang.org/",
+      "okIfNotValid": false,
       "isValidated": true
    },
    {
       "label": "React",
       "url": "https://reactjs.org/",
+      "okIfNotValid": false,
       "isValidated": true
    },
    {
+      "label": "create-react-app",
+      "url": "https://reactjs.org/docs/create-a-new-react-app.html#create-react-app",
+      "okIfNotValid": false,
+      "isValidated": true
+   },
+
+   {
       "label": "material-ui",
       "url": "https://material-ui.com/",
+      "okIfNotValid": false,
+      "isValidated": true
+   },
+   {
+      "label": "axios on github",
+      "url": "https://github.com/axios/axios/",
+      "okIfNotValid": false,
       "isValidated": true
    }
 ]

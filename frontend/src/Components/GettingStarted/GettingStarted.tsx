@@ -7,11 +7,7 @@ import Stepper from '@material-ui/core/Stepper'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import React from 'react'
-import { linkData } from '../Stack/Stack'
-
-const getLink = (label: string) => {
-   return linkData.find((element) => element.linkLabel === label)
-}
+import { getLink, ValidatedLink } from '../Links/LinkUtil'
 
 const useStyles = makeStyles((theme: Theme) =>
    createStyles({
@@ -32,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 function getSteps() {
-   return ['Install VSCode', 'Install django', 'Install Rest', 'Node.js']
+   return ['Install VSCode', 'Install django', 'Install Rest', 'Create React application']
 }
 
 function getStepContent(step: number) {
@@ -41,9 +37,7 @@ function getStepContent(step: number) {
          return (
             <div>
                <span>Install </span>
-               <Link target="_blank" href={getLink('VSCode')?.link} color="inherit">
-                  VSCode
-               </Link>
+               <ValidatedLink label="VSCode" />
                <span> it is a good editor. Most of the remaining steps can be done within VSCode</span>
             </div>
          )
@@ -51,7 +45,7 @@ function getStepContent(step: number) {
          return (
             <div>
                <span>Use the </span>
-               <Link target="_blank" href="https://docs.djangoproject.com/en/3.2/intro/install/" color="inherit">
+               <Link target="_blank" href={getLink('django Quick Install Guide')?.url} color="inherit">
                   django Quick Install Guide.
                </Link>
                <span>
@@ -65,10 +59,23 @@ function getStepContent(step: number) {
          return (
             <div>
                <span>Use the </span>
-               <Link target="_blank" href="https://www.django-rest-framework.org/#installation" color="inherit">
-                  Rest framework.
+               <Link target="_blank" href={getLink('Rest framework')?.url} color="inherit">
+                  {getLink('Rest framework')?.label}
                </Link>
                <span> instalation instructions.</span>
+            </div>
+         )
+      case 3:
+         return (
+            <div>
+               <span>Go to the</span>
+               <Link target="_blank" href={getLink('React')?.url} color="inherit">
+                  <span> React </span>
+               </Link>
+               <span> for documentation. Use instruction for setting up a boilerplate workspace at </span>
+               <Link target="_blank" href={getLink('create-react-app')?.url} color="inherit">
+                  <span>create-react-app</span>
+               </Link>
             </div>
          )
       default:

@@ -94,6 +94,7 @@ def ping(request):
         "django": _externalLink("https://www.djangoproject.com/"),
         "Rest framework": _externalLink("https://www.django-rest-framework.org/"),
         "TypeScript": _externalLink("https://www.typescriptlang.org/"),
+        "axios on github": _externalLink("https://github.com/axios/axios/"),
         "React": _externalLink("https://reactjs.org/"),
         "material-ui": _externalLink("https://material-ui.com/"),
     }
