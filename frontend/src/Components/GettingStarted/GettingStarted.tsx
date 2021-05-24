@@ -38,7 +38,7 @@ function getStepContent(step: number) {
             <div>
                <span>Install </span>
                <ValidatedLink label="VSCode" />
-               <span> it is a good editor. Most of the remaining steps can be done within VSCode</span>
+               <span> it is a good editor. Most of the remaining steps can be done within VSCode.</span>
             </div>
          )
       case 1:
