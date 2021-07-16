@@ -1,4 +1,4 @@
-import { Link, StepLabel } from '@material-ui/core'
+import { StepLabel } from '@material-ui/core'
 import Button from '@material-ui/core/Button'
 import Paper from '@material-ui/core/Paper'
 import Step from '@material-ui/core/Step'
@@ -7,7 +7,7 @@ import Stepper from '@material-ui/core/Stepper'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import React from 'react'
-import { getLink, ValidatedLink } from '../Links/LinkUtil'
+import { ValidatedLink } from '../Links/LinkUtil'
 
 const useStyles = makeStyles((theme: Theme) =>
    createStyles({
@@ -45,9 +45,7 @@ function getStepContent(step: number) {
          return (
             <div>
                <span>Use the </span>
-               <Link target="_blank" href={getLink('django Quick Install Guide')?.url} color="inherit">
-                  django Quick Install Guide.
-               </Link>
+               <ValidatedLink label="django Quick Install Guide" />
                <span>
                   {' '}
                   This will install Python and django. A database (SQLite) for your local host is included with the
@@ -59,23 +57,17 @@ function getStepContent(step: number) {
          return (
             <div>
                <span>Use the </span>
-               <Link target="_blank" href={getLink('Rest framework')?.url} color="inherit">
-                  {getLink('Rest framework')?.label}
-               </Link>
+               <ValidatedLink label="Rest framework" />
                <span> instalation instructions.</span>
             </div>
          )
       case 3:
          return (
             <div>
-               <span>Go to the</span>
-               <Link target="_blank" href={getLink('React')?.url} color="inherit">
-                  <span> React </span>
-               </Link>
+               <span>Go to the </span>
+               <ValidatedLink label="React" />
                <span> for documentation. Use instruction for setting up a boilerplate workspace at </span>
-               <Link target="_blank" href={getLink('create-react-app')?.url} color="inherit">
-                  <span>create-react-app</span>
-               </Link>
+               <ValidatedLink label="create-react-app" />
             </div>
          )
       default:

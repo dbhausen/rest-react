@@ -21,3 +21,15 @@ const useToken = () => {
    }
 }
 export default useToken
+
+export const sessionHasToken = (): boolean => {
+   const tokenString = sessionStorage.getItem('token')
+   if (tokenString === null) {
+      return false
+   }
+   return true
+}
+
+export const clearToken = () => {
+   sessionStorage.removeItem('token')
+}

@@ -3,14 +3,14 @@
 import { FormControl, Grid, InputLabel, MenuItem, Select } from '@material-ui/core'
 import React, { useState } from 'react'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
-import env from '../Login/Env'
-import getCsrfToken from '../Login/getCsrfToken'
-import Login from '../Login/Login'
+import env from '../../SecuredComponents/Login/Env'
+import getCsrfToken from '../../SecuredComponents/Login/getCsrfToken'
+import Login from '../../SecuredComponents/Login/Login'
+import useToken from '../../SecuredComponents/useToken'
 import RandomValues from '../RandomNames/RandomNames'
 import RestCrud from '../RestCrud/RestCrud'
 import RestViewGrid from '../RestFormGrid/RestFormGrid'
 import './App.css'
-import useToken from './useToken'
 
 function App() {
    const { token, setToken } = useToken()

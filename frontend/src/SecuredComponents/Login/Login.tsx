@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
+import UserContext from '../../Components/Context/UserContext'
 import env from './Env'
 import getCsrfToken from './getCsrfToken'
 import './Login.css'
@@ -27,16 +28,24 @@ const loginUser = async (method: ThttpMethod, userpass: ICredentials) => {
 const Login = ({ setToken }: any) => {
    const [email, setEmail] = useState('d@dd.com')
    const [password, setPassword] = useState('postman!!01')
+   const user = useContext(UserContext)
 
    const handleSubmit = async (e: { preventDefault: () => void }) => {
       e.preventDefault()
       const token = await loginUser('POST', { email, password })
+      user.hasToken = true
+      user.user = email
+
+      // eslint-disable-next-line no-shadow
+
       setToken(token)
    }
 
    return (
       <div className="login-wrapper">
          <h1>Please Log In</h1>
+
+         <h3>Feel free to use the default Username/Password to hack the system</h3>
          <form onSubmit={handleSubmit}>
             <label>
                <p>Username</p>

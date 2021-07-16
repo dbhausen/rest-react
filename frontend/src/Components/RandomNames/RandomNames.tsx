@@ -22,6 +22,7 @@ import CreateSharpIcon from '@material-ui/icons/CreateSharp'
 import copy from 'clipboard-copy'
 import dayjs from 'dayjs'
 import React, { useEffect, useState } from 'react'
+import UserContext from '../Context/UserContext'
 
 const genderNames: string[] = [
    'Not disclosed',
@@ -353,155 +354,160 @@ const RandomNames = (props: IProps) => {
    }
 
    return (
-      <Paper elevation={0} style={{ padding: '8px' }}>
-         <Grid container direction="row" spacing={3}>
-            <Grid item>
-               <FormGroup>
-                  {cols.map((col) => (
-                     <FormControlLabel
-                        control={
-                           <Switch
-                              size="small"
-                              checked={!col.hide}
-                              onChange={handleSwitchChange}
-                              name={col.field}
-                              color="primary"
+      <UserContext.Consumer>
+         {(u) => (
+            <Paper elevation={0} style={{ padding: '8px' }}>
+               {u.user}
+               <Grid container direction="row" spacing={3}>
+                  <Grid item>
+                     <FormGroup>
+                        {cols.map((col) => (
+                           <FormControlLabel
+                              control={
+                                 <Switch
+                                    size="small"
+                                    checked={!col.hide}
+                                    onChange={handleSwitchChange}
+                                    name={col.field}
+                                    color="primary"
+                                 />
+                              }
+                              label={col.field}
                            />
-                        }
-                        label={col.field}
-                     />
-                  ))}
-               </FormGroup>
-            </Grid>
-            <Grid item>
-               <FormGroup>
-                  <FormControlLabel
-                     control={
-                        <Switch
-                           size="small"
-                           onChange={handleInclusiveGenderChange}
-                           checked={inclusiveGender}
-                           value={inclusiveGender}
+                        ))}
+                     </FormGroup>
+                  </Grid>
+                  <Grid item>
+                     <FormGroup>
+                        <FormControlLabel
+                           control={
+                              <Switch
+                                 size="small"
+                                 onChange={handleInclusiveGenderChange}
+                                 checked={inclusiveGender}
+                                 value={inclusiveGender}
+                                 color="primary"
+                              />
+                           }
+                           label="Use inclusive gender roles"
+                        />
+
+                        <TextField
+                           label="Maximum age"
+                           onChange={handleMaxAgeChange}
+                           value={maxAge}
+                           type="number"
                            color="primary"
                         />
-                     }
-                     label="Use inclusive gender roles"
-                  />
 
-                  <TextField
-                     label="Maximum age"
-                     onChange={handleMaxAgeChange}
-                     value={maxAge}
-                     type="number"
-                     color="primary"
-                  />
+                        <TextField
+                           label="Minimum age when hired"
+                           onChange={handleMinAgeChange}
+                           value={minAge}
+                           type="number"
+                           color="primary"
+                        />
 
-                  <TextField
-                     label="Minimum age when hired"
-                     onChange={handleMinAgeChange}
-                     value={minAge}
-                     type="number"
-                     color="primary"
-                  />
+                        <Tooltip title="Use preferences to generate a new set of employees" placement="bottom-start">
+                           <Button color="primary" variant="contained" onClick={() => callCalculate()}>
+                              Refresh
+                           </Button>
+                        </Tooltip>
+                     </FormGroup>
+                  </Grid>
 
-                  <Tooltip title="Use preferences to generate a new set of employees" placement="bottom-start">
-                     <Button color="primary" variant="contained" onClick={() => callCalculate()}>
-                        Refresh
-                     </Button>
-                  </Tooltip>
-               </FormGroup>
-            </Grid>
+                  <Grid item>
+                     <Paper className={classes.dataPaper} style={{ padding: '10px' }}>
+                        <Typography>
+                           <pre>
+                              {'type TEmployee = {'}
+                              {cols
+                                 .filter((col) => !col.hide)
+                                 .map((col) => (
+                                    <div>{`   ${col.field}: ${typeMap.get(col.field).type}`}</div>
+                                 ))}
+                              {'}'}
+                           </pre>
+                        </Typography>
+                     </Paper>
+                  </Grid>
+               </Grid>
 
-            <Grid item>
-               <Paper className={classes.dataPaper} style={{ padding: '10px' }}>
-                  <Typography>
-                     <pre>
-                        {'type TEmployee = {'}
-                        {cols
-                           .filter((col) => !col.hide)
-                           .map((col) => (
-                              <div>{`   ${col.field}: ${typeMap.get(col.field).type}`}</div>
-                           ))}
-                        {'}'}
-                     </pre>
-                  </Typography>
+               <Paper className={classes.menubox} component="span">
+                  <FormControl>
+                     <InputLabel id="demo-simple-select-label">Count</InputLabel>
+                     <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={rowCount}
+                        onChange={handleRowCountChange}>
+                        <MenuItem value={100}>100</MenuItem>
+                        <MenuItem value={1000}>1,000</MenuItem>
+                        <MenuItem value={10000}>10,000</MenuItem>
+                        <MenuItem value={50000}>50,000</MenuItem>
+                     </Select>
+                  </FormControl>
+                  <FormControl>
+                     <InputLabel id="demo-simple-select-label">Output as</InputLabel>
+                     <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={outputAs}
+                        onChange={handleOutputAsChange}>
+                        <MenuItem value="DataGrid">Data Grid</MenuItem>
+                        <MenuItem value="JSON">JSON</MenuItem>
+                        <MenuItem value="csv">Comma Separated</MenuItem>
+                     </Select>
+                  </FormControl>
+                  <Button
+                     endIcon={<CreateSharpIcon />}
+                     size="small"
+                     classes={outputAs === 'DataGrid' ? { root: classes.hiddenbutton } : { root: classes.showbutton }}
+                     onClick={copyToClip}>
+                     Copy to clipboard
+                  </Button>
                </Paper>
-            </Grid>
-         </Grid>
 
-         <Paper className={classes.menubox} component="span">
-            <FormControl>
-               <InputLabel id="demo-simple-select-label">Count</InputLabel>
-               <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={rowCount}
-                  onChange={handleRowCountChange}>
-                  <MenuItem value={100}>100</MenuItem>
-                  <MenuItem value={1000}>1,000</MenuItem>
-                  <MenuItem value={10000}>10,000</MenuItem>
-                  <MenuItem value={50000}>50,000</MenuItem>
-               </Select>
-            </FormControl>
-            <FormControl>
-               <InputLabel id="demo-simple-select-label">Output as</InputLabel>
-               <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={outputAs}
-                  onChange={handleOutputAsChange}>
-                  <MenuItem value="DataGrid">Data Grid</MenuItem>
-                  <MenuItem value="JSON">JSON</MenuItem>
-                  <MenuItem value="csv">Comma Separated</MenuItem>
-               </Select>
-            </FormControl>
-            <Button
-               endIcon={<CreateSharpIcon />}
-               size="small"
-               classes={outputAs === 'DataGrid' ? { root: classes.hiddenbutton } : { root: classes.showbutton }}
-               onClick={copyToClip}>
-               Copy to clipboard
-            </Button>
-         </Paper>
-
-         {outputAs === 'DataGrid' ? (
-            <Paper elevation={0} style={{ marginBottom: '20px', paddingLeft: '20px' }}>
-               <Paper className={classes.dataPaper} elevation={9} style={{ height: '400px' }}>
-                  <DataGrid
-                     density="compact"
-                     loading={loading}
-                     pageSize={100}
-                     disableColumnSelector={true}
-                     autoHeight={false}
-                     rows={rows}
-                     columns={cols}
-                  />
-               </Paper>
-            </Paper>
-         ) : outputAs === 'JSON' ? (
-            <Paper
-               className={classes.dataPaper}
-               id="json"
-               elevation={9}
-               style={{
-                  wordWrap: 'break-word',
-                  wordBreak: 'break-all',
-                  overflow: 'auto',
-                  maxWidth: '700px',
-                  maxHeight: '400px',
-               }}>
-               {jsonToShortJson()}
-            </Paper>
-         ) : (
-            <Paper
-               className={classes.dataPaper}
-               id="json"
-               elevation={9}
-               style={{ maxWidth: '700px', maxHeight: '400px', whiteSpace: 'break-spaces', overflow: 'auto' }}>
-               <pre>{jsonToCsv()}</pre>
+               {outputAs === 'DataGrid' ? (
+                  <Paper elevation={0} style={{ marginBottom: '20px', paddingLeft: '20px' }}>
+                     <Paper className={classes.dataPaper} elevation={9} style={{ height: '400px' }}>
+                        <DataGrid
+                           density="compact"
+                           loading={loading}
+                           pageSize={100}
+                           disableColumnSelector={true}
+                           autoHeight={false}
+                           rows={rows}
+                           columns={cols}
+                        />
+                     </Paper>
+                  </Paper>
+               ) : outputAs === 'JSON' ? (
+                  <Paper
+                     className={classes.dataPaper}
+                     id="json"
+                     elevation={9}
+                     style={{
+                        wordWrap: 'break-word',
+                        wordBreak: 'break-all',
+                        overflow: 'auto',
+                        maxWidth: '700px',
+                        maxHeight: '400px',
+                     }}>
+                     {jsonToShortJson()}
+                  </Paper>
+               ) : (
+                  <Paper
+                     className={classes.dataPaper}
+                     id="json"
+                     elevation={9}
+                     style={{ maxWidth: '700px', maxHeight: '400px', whiteSpace: 'break-spaces', overflow: 'auto' }}>
+                     <pre>{jsonToCsv()}</pre>
+                  </Paper>
+               )}
             </Paper>
          )}
-      </Paper>
+      </UserContext.Consumer>
    )
 }
 export default RandomNames

@@ -13,25 +13,19 @@ const useStyles = makeStyles((theme: Theme) =>
    })
 )
 
-export const getLink = (label: string): any => {
-   console.log(label)
-   console.log(linkJSON.find((link) => link.label === label)?.url)
-
-   return linkJSON.find((link) => link.label === label)
-}
-
-interface IProps {
+export interface IProps {
    label: string
 }
 
 export const ValidatedLink = (props: IProps): any => {
+   const { label } = props
    const classes = useStyles()
 
-   const linkData = linkJSON.find((link) => link.label === props.label)
+   const linkData = linkJSON.find((link) => link.label === label)
 
    if (linkData?.isValidated || linkData?.okIfNotValid) {
       return (
-         <Link target="_blank" href={linkData.url} color="inherit">
+         <Link target="_blank" href={linkData.url}>
             {linkData.label}
          </Link>
       )

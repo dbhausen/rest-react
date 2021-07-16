@@ -19,7 +19,7 @@ import axios from 'axios'
 import { convertToRaw, EditorState, RawDraftContentState } from 'draft-js'
 import MUIRichTextEditor, { TToolbarComponentProps } from 'mui-rte'
 import React, { useEffect, useState } from 'react'
-import env from '../Login/Env'
+import env from '../../SecuredComponents/Login/Env'
 
 const lightTheme = createMuiTheme()
 

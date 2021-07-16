@@ -100,6 +100,11 @@ export const makeMyStyles = (theme: Theme, drawerWidth: number) => {
          position: 'absolute',
          right: 0,
       },
+      clearToken: {
+         marginRight: theme.spacing(2),
+         position: 'absolute',
+         right: 40,
+      },
       // necessary for content to be below app bar
       toolbar: theme.mixins.toolbar,
 
